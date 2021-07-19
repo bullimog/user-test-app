@@ -2,19 +2,40 @@ package com.bullimore.usertestapp.services;
 
 import com.bullimore.usertestapp.connectors.UserConnector;
 import com.bullimore.usertestapp.models.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
+
 import java.util.ArrayList;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest
 public class UserServiceTests {
 
-@MockBean
-private UserConnector userConnector;
+@InjectMocks
+UserService userService = new UserServiceImpl();
+
+@Mock
+ProximityService proximityService;
+
+@Mock
+UserConnector userConnector;
+
+@BeforeEach
+public void initialiseConfig(){
+    ReflectionTestUtils.setField(userService,"targetTolerance",50);
+    ReflectionTestUtils.setField(userService,"targetLatitude",51.51271919);
+    ReflectionTestUtils.setField(userService,"targetLongitude",-0.09075364);
+}
+
 
     User londonUser1 = new User.Builder().
             id(1).first_name("dave").last_name("smith").
@@ -41,8 +62,8 @@ private UserConnector userConnector;
             email("simon@google.com").ip_address("192.168.1.6").
             latitude(52.237508d).longitude(-0.918168d).build();
     User wembleyLatLonUser = new User.Builder().
-            id(1).first_name("simon").last_name("south").
-            email("simon@google.com").ip_address("192.168.1.7").
+            id(1).first_name("barry").last_name("barker").
+            email("barry@google.com").ip_address("192.168.1.7").
             latitude(51.555398d).longitude(-0.278651d).build();
     User justOver50MilesLatLonUser = new User.Builder().
             id(1).first_name("greg").last_name("cambridge").
@@ -54,22 +75,29 @@ private UserConnector userConnector;
             latitude(52.225d).longitude(-0.090753d).build();
 
     @Test
-    public void getOnlyLondonAndCloseToLondonUsersTest() throws Exception {
-        UserService userService = new UserServiceImpl();
+    public void getOnlyLondonAndCloseToLondonUsersTest() {
         ArrayList<User> londonUsers = new ArrayList<User>();
         londonUsers.add(londonUser1);
         londonUsers.add(londonUser2);
         londonUsers.add(londonUser3);
-        when(userConnector.getLondonUsers()).thenReturn(londonUsers);
+        Mockito.when(userConnector.getTargetUsers()).thenReturn(londonUsers);
 
         ArrayList<User> allUsers = new ArrayList<User>();
-        londonUsers.add(longbentonLatLonUser);
-        londonUsers.add(newcastleLatLonUser);
-        londonUsers.add(northamptonLatLonUser);
-        londonUsers.add(wembleyLatLonUser);
-        londonUsers.add(justOver50MilesLatLonUser);
-        londonUsers.add(justUnder50MilesLatLonUser);
-        when(userConnector.getAllUsers()).thenReturn(allUsers);
+        allUsers.add(longbentonLatLonUser);
+        allUsers.add(newcastleLatLonUser);
+        allUsers.add(northamptonLatLonUser);
+        allUsers.add(wembleyLatLonUser);
+        allUsers.add(justOver50MilesLatLonUser);
+        allUsers.add(justUnder50MilesLatLonUser);
+        Mockito.when(userConnector.getAllUsers()).thenReturn(allUsers);
+
+        when(proximityService.lonLatDifference(any(),any(),eq(55.010025d), any())).thenReturn(270.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(54.988757d), any())).thenReturn(275.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(52.237508d), any())).thenReturn(100.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(51.555398d), any())).thenReturn(7.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(52.24d), any())).thenReturn(51.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(52.225d), any())).thenReturn(49.0f);
+
 
         ArrayList<User> filteredUsers = userService.getUsers();
         Assertions.assertEquals(filteredUsers.size(), 5);
@@ -81,13 +109,13 @@ private UserConnector userConnector;
     }
 
     @Test
-    public void filterUsersBasedOnLatLonTest() throws Exception {
-        UserService userService = new UserServiceImpl();
+    public void filterUsersBasedOnLatLonTest() {
+        when(proximityService.lonLatDifference(any(),any(),eq(52.24d), any())).thenReturn(51.0f);
+        when(proximityService.lonLatDifference(any(),any(),eq(52.225d),any())).thenReturn(49.0f);
         ArrayList<User> users = new ArrayList<User>();
         users.add(justOver50MilesLatLonUser);
         users.add(justUnder50MilesLatLonUser);
-        when(userConnector.getAllUsers()).thenReturn(users);
-        ArrayList<User> filteredUsers = userService.getUsers();
+        ArrayList<User> filteredUsers = userService.filterUsers(users);
         Assertions.assertEquals(filteredUsers.size(), 1);
         Assertions.assertTrue(filteredUsers.contains(justUnder50MilesLatLonUser));
     }

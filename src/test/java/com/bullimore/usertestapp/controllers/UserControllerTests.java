@@ -49,7 +49,7 @@ public class UserControllerTests {
         Mockito.when(userService.getUsers()).thenReturn(users);
 
 
-        mockMvc.perform(get("/users/london"))
+        mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(jsonPath("$[0].id", Matchers.equalTo(1)))

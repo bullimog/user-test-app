@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 
-@RestController("/users")
+@RestController
 public class UserController {
 
     @Autowired
     UserService userService;
 
-    @RequestMapping(value = "/london", method = RequestMethod.GET)
-    public ArrayList<User> getAllLondonUsers()
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ArrayList<User> getAllTargetUsers()
     {
         return userService.getUsers();
     }

@@ -9,6 +9,8 @@ public class User {
     private Double latitude;
     private Double longitude;
 
+    public  User(){}
+
     public Integer getId() {
         return id;
     }

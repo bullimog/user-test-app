@@ -5,5 +5,5 @@ import java.util.ArrayList;
 
 public interface UserConnector {
     ArrayList<User> getAllUsers();
-    ArrayList<User> getLondonUsers();
+    ArrayList<User> getTargetUsers();
 }
