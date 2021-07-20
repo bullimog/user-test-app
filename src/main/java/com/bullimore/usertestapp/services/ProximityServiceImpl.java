@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ProximityServiceImpl implements ProximityService{
-    static int MILE_RADIANS = 3936;
+    static final int MILE_RADIANS = 3936;
 
     @Override
     public Float lonLatDifference(Double latA, Double lonA, Double latB, Double lonB) {

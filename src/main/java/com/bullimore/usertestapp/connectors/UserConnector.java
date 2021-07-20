@@ -1,9 +1,9 @@
 package com.bullimore.usertestapp.connectors;
 
 import com.bullimore.usertestapp.models.User;
-import java.util.ArrayList;
+import reactor.core.publisher.Mono;
 
 public interface UserConnector {
-    ArrayList<User> getAllUsers();
-    ArrayList<User> getTargetUsers();
+    Mono<User[]> getAllUsers();
+    Mono<User[]> getTargetUsers();
 }

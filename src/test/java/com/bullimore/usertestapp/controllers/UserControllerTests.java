@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -49,7 +48,7 @@ public class UserControllerTests {
         Mockito.when(userService.getUsers()).thenReturn(users);
 
 
-        mockMvc.perform(get("/users"))
+        mockMvc.perform(get("/london-users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(jsonPath("$[0].id", Matchers.equalTo(1)))

@@ -5,9 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import reactor.core.publisher.Mono;
 
 @Component
 public class UserConnectorImpl implements UserConnector {
@@ -22,35 +20,20 @@ public class UserConnectorImpl implements UserConnector {
     private String cityUsersUrl;
 
     @Override
-    public ArrayList<User> getAllUsers(){
-        User[] userArray = webClientBuilder.build()
+    public Mono<User[]> getAllUsers(){
+        return webClientBuilder.build()
                 .get()
                 .uri(allUsersUrl)
                 .retrieve()
-                .bodyToMono(User[].class)
-                .block();
-
-        ArrayList<User> users = new ArrayList<>();
-        if(userArray!= null) {
-            Collections.addAll(users, userArray);
-        }
-        return  users;
+                .bodyToMono(User[].class);
     }
 
     @Override
-    public ArrayList<User> getTargetUsers(){
-        User[] userArray = webClientBuilder.build()
+    public Mono<User[]> getTargetUsers(){
+        return webClientBuilder.build()
                 .get()
                 .uri(cityUsersUrl)
                 .retrieve()
-                .bodyToMono(User[].class)
-                .block();
-
-        ArrayList<User> users = new ArrayList<>();
-        if(userArray!= null) {
-            Collections.addAll(users, userArray);
-        }
-        return  users;
-
+                .bodyToMono(User[].class);
     }
 }

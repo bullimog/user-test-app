@@ -10,9 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
-
+import reactor.core.publisher.Mono;
 import java.util.ArrayList;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -76,20 +75,14 @@ public void initialiseConfig(){
 
     @Test
     public void getOnlyLondonAndCloseToLondonUsersTest() {
-        ArrayList<User> londonUsers = new ArrayList<User>();
-        londonUsers.add(londonUser1);
-        londonUsers.add(londonUser2);
-        londonUsers.add(londonUser3);
-        Mockito.when(userConnector.getTargetUsers()).thenReturn(londonUsers);
+        User[] londonUsers = {londonUser1, londonUser2, londonUser3};
+        Mono<User[]> mono1 = Mono.just(londonUsers);
+        Mockito.when(userConnector.getTargetUsers()).thenReturn(mono1);
 
-        ArrayList<User> allUsers = new ArrayList<User>();
-        allUsers.add(longbentonLatLonUser);
-        allUsers.add(newcastleLatLonUser);
-        allUsers.add(northamptonLatLonUser);
-        allUsers.add(wembleyLatLonUser);
-        allUsers.add(justOver50MilesLatLonUser);
-        allUsers.add(justUnder50MilesLatLonUser);
-        Mockito.when(userConnector.getAllUsers()).thenReturn(allUsers);
+        User[] allUsers = {longbentonLatLonUser, newcastleLatLonUser, northamptonLatLonUser,
+                           wembleyLatLonUser,justOver50MilesLatLonUser,justUnder50MilesLatLonUser};
+        Mono<User[]> mono2 = Mono.just(allUsers);
+        Mockito.when(userConnector.getAllUsers()).thenReturn(mono2);
 
         when(proximityService.lonLatDifference(any(),any(),eq(55.010025d), any())).thenReturn(270.0f);
         when(proximityService.lonLatDifference(any(),any(),eq(54.988757d), any())).thenReturn(275.0f);

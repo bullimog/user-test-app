@@ -8,8 +8,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 public class ProximityServiceTests {
 
-    Double latLondon = 51.51271919;
-    Double lonLondon = -0.09075364;
+    final Double latLondon = 51.51271919;
+    final Double lonLondon = -0.09075364;
 
     @Test
     public void isNorthMoreThan50MilesOutsideLondon(){
@@ -32,7 +32,7 @@ public class ProximityServiceTests {
     }
 
     @Test
-    public void isNearEastOfLondon(){
+    public void isLessThan50MilesEastOfLondon(){
         Double latJustUnder50ToLondon = 51.6710832d;
         Double lonJustUnder50ToLondon = 0.8078532d;
         ProximityService proximityService = new ProximityServiceImpl();
@@ -42,7 +42,7 @@ public class ProximityServiceTests {
     }
 
     @Test
-    public void isFurtherEastOfLondon(){
+    public void isMoreThan50MilesEastOfLondon(){
         Double latJustUnder50ToLondon = 51.6710832d;
         Double lonJustUnder50ToLondon = 1.37078532d;
         ProximityService proximityService = new ProximityServiceImpl();
@@ -52,7 +52,7 @@ public class ProximityServiceTests {
     }
 
     @Test
-    public void isNearWestOfLondon(){
+    public void isLessThan50MilesWestOfLondon(){
         Double latJustUnder50ToLondon = 51.6710832d;
         Double lonJustUnder50ToLondon = -0.8078532d;
         ProximityService proximityService = new ProximityServiceImpl();
@@ -62,7 +62,7 @@ public class ProximityServiceTests {
     }
 
     @Test
-    public void isFurtherWestOfLondon(){
+    public void isMoreThan50MilesWestOfLondon(){
         Double latJustUnder50ToLondon = 51.6710832d;
         Double lonJustUnder50ToLondon = -1.37078532d;
         ProximityService proximityService = new ProximityServiceImpl();
@@ -71,7 +71,7 @@ public class ProximityServiceTests {
         Assertions.assertTrue(distance > 50.0f);
     }
     @Test
-    public void isNearSouthOfLondon(){
+    public void isLessThan50MilesSouthOfLondon(){
         Double latJustUnder50ToLondon = 51.010832d;
         Double lonJustUnder50ToLondon = -0.05398d;
         ProximityService proximityService = new ProximityServiceImpl();
@@ -81,7 +81,7 @@ public class ProximityServiceTests {
     }
 
     @Test
-    public void isFurtherSouthOfLondon(){
+    public void isMoreThan50MilesSouthOfLondon(){
         Double latJustUnder50ToLondon = 50.810832d;
         Double lonJustUnder50ToLondon = -0.5398d;
         ProximityService proximityService = new ProximityServiceImpl();
