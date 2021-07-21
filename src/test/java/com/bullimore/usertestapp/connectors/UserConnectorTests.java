@@ -14,7 +14,7 @@ import java.time.Duration;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 @SpringBootTest
-public class UserConnectorIntegrationTests {
+public class UserConnectorTests {
 
 @Autowired
 UserConnector userConnector;
