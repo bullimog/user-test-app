@@ -11,6 +11,7 @@ import reactor.core.scheduler.Schedulers;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 @Component
 public class UserServiceImpl implements UserService{
@@ -49,15 +50,11 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public ArrayList<User> filterUsers(ArrayList<User> users){
-        ArrayList<User> keep = new ArrayList<User>();
-        users.forEach(user -> {
-            Float distance = proximityService.lonLatDifference(targetLatitude, targetLongitude,
-                    user.getLatitude(), user.getLongitude());
-            if(distance<targetTolerance){
-                keep.add(user);
-            }
-        });
-
-        return keep;
+        Predicate<User> filter = user -> (
+                proximityService.lonLatDifference(targetLatitude, targetLongitude,
+                user.getLatitude(), user.getLongitude()) >= targetTolerance
+                );
+        users.removeIf(filter);
+        return users;
     }
 }
