@@ -1,5 +1,5 @@
 # user-test-app
-A recruitment exercise to produce an API which calls test APIs 
+An exercise to produce an API which calls test APIs 
 and returns people who are listed as either living in London,
 or whose current coordinates are within 50 miles of London.
 
